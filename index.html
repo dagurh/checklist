@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ævintýralisti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1208;
+      --ink2: #5a4e3a;
+      --ink3: #9c8f7a;
+      --paper: #f7f2e8;
+      --paper2: #ede6d6;
+      --accent: #c8410a;
+      --accent2: #e8c84a;
+      --check: #3a6b2a;
+      --check-bg: #e8f2e3;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .wrap { max-width: 540px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+
+    .eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 8vw, 3rem);
+      font-weight: 600;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--ink3);
+    }
+
+    .progress-wrap { margin-bottom: 2rem; }
+
+    .progress-track {
+      height: 4px;
+      background: var(--paper2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--check);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--ink3);
+      text-align: right;
+    }
+
+    .list { display: flex; flex-direction: column; gap: 8px; }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--paper2);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, opacity 0.2s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .item:hover { border-color: #d4c9b0; }
+    .item:active { transform: scale(0.99); }
+
+    .item.checked {
+      background: var(--check-bg);
+      border-color: #c2dabb;
+      opacity: 0.75;
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1.5px solid #c8bfaa;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .item.checked .checkbox {
+      background: var(--check);
+      border-color: var(--check);
+    }
+
+    .checkmark {
+      display: none;
+      width: 12px;
+      height: 12px;
+      stroke: white;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .item.checked .checkmark { display: block; }
+
+    .item-text {
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .item.checked .item-text {
+      text-decoration: line-through;
+      color: var(--ink3);
+    }
+
+    .item-num {
+      font-family: 'Fraunces', serif;
+      font-size: 12px;
+      color: var(--ink3);
+      min-width: 18px;
+      text-align: right;
+    }
+
+    .syncing {
+      text-align: center;
+      font-size: 12px;
+      color: var(--ink3);
+      margin-top: 1.5rem;
+      height: 16px;
+      transition: opacity 0.3s;
+    }
+
+    .complete-msg {
+      display: none;
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--check-bg);
+      border-radius: var(--radius);
+      border: 1px solid #c2dabb;
+    }
+
+    .complete-msg p:first-child {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .complete-msg p:last-child { font-size: 13px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Reykjavík</p>
+    <h1>Ævintýralisti</h1>
+    <p class="subtitle">Merktu við þegar þér tekst eitthvað</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress" style="width:0%"></div>
+    </div>
+    <p class="progress-label" id="progress-label">0 / 0 lokið</p>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="complete-msg" id="complete-msg">
+    <p>🎉 Allt lokið!</p>
+    <p>Þið eruð hreinabrugg.</p>
+  </div>
+
+  <p class="syncing" id="sync-status">Hleður…</p>
+</div>
+
+<script type="module">
+  import ITEMS from "./items.js";
+
+  let checked = {};
+
+  async function fetchChecked() {
+    const res = await fetch("/api/checks");
+    return res.ok ? await res.json() : {};
+  }
+
+  async function setChecked(index, value) {
+    await fetch("/api/checks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ index, checked: value }),
+    });
+  }
+
+  function render() {
+    const list = document.getElementById("list");
+    const doneCount = Object.keys(checked).length;
+    const total = ITEMS.length;
+
+    document.getElementById("progress").style.width = total ? (doneCount / total * 100) + "%" : "0%";
+    document.getElementById("progress-label").textContent = `${doneCount} / ${total} lokið`;
+    document.getElementById("complete-msg").style.display = doneCount === total ? "block" : "none";
+
+    list.innerHTML = ITEMS.map((text, i) => {
+      const done = !!checked[i];
+      return `
+        <div class="item${done ? " checked" : ""}" data-index="${i}" role="checkbox" aria-checked="${done}" tabindex="0">
+          <span class="item-num">${i + 1}</span>
+          <span class="checkbox">
+            <svg class="checkmark" viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9.5 10.5,2.5"/></svg>
+          </span>
+          <span class="item-text">${text}</span>
+        </div>`;
+    }).join("");
+
+    list.querySelectorAll(".item").forEach(el => {
+      el.addEventListener("click", () => toggle(+el.dataset.index));
+      el.addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter") toggle(+el.dataset.index); });
+    });
+  }
+
+  async function toggle(index) {
+    const nowChecked = !checked[index];
+    if (nowChecked) checked[index] = true; else delete checked[index];
+    render();
+    setSyncStatus("Vistar…");
+    await setChecked(index, nowChecked);
+    setSyncStatus("Vistað ✓");
+    setTimeout(() => setSyncStatus(""), 1500);
+  }
+
+  function setSyncStatus(msg) {
+    const el = document.getElementById("sync-status");
+    el.textContent = msg;
+    el.style.opacity = msg ? "1" : "0";
+  }
+
+  async function init() {
+    checked = await fetchChecked();
+    render();
+    setSyncStatus("");
+  }
+
+  // Poll for updates from other users every 5 seconds
+  init();
+  setInterval(async () => {
+    checked = await fetchChecked();
+    render();
+  }, 5000);
+</script>
+</body>
+</html>
