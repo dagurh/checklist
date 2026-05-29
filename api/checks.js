@@ -1,11 +1,12 @@
-// api/checks.js — Vercel Serverless Function
-// Reads and writes checked state to Vercel KV (Redis)
-// GET  /api/checks        → returns { "0": true, "2": true, ... }
-// POST /api/checks        → body { index, checked } → saves and returns updated state
+import { put, list } from "@vercel/blob";
 
-import { kv } from "@vercel/kv";
+const BLOB_FILENAME = "checklist-checked.json";
 
-const KEY = "checklist:checked";
+async function getExistingUrl() {
+  const { blobs } = await list();
+  const found = blobs.find(b => b.pathname === BLOB_FILENAME);
+  return found?.url || null;
+}
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -15,20 +16,29 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
 
   if (req.method === "GET") {
-    const data = (await kv.get(KEY)) || {};
+    const url = await getExistingUrl();
+    if (!url) return res.status(200).json({});
+    const data = await fetch(url + "?t=" + Date.now()).then(r => r.json());
     return res.status(200).json(data);
   }
 
   if (req.method === "POST") {
     const { index, checked } = req.body;
     if (typeof index !== "number") return res.status(400).json({ error: "index required" });
-    const data = (await kv.get(KEY)) || {};
-    if (checked) {
-      data[index] = true;
-    } else {
-      delete data[index];
+
+    let data = {};
+    const url = await getExistingUrl();
+    if (url) {
+      try { data = await fetch(url + "?t=" + Date.now()).then(r => r.json()); } catch {}
     }
-    await kv.set(KEY, data);
+
+    if (checked) data[index] = true; else delete data[index];
+
+    await put(BLOB_FILENAME, JSON.stringify(data), {
+      access: "public",
+      contentType: "application/json",
+      allowOverwrite: true,
+    });
     return res.status(200).json(data);
   }
 
