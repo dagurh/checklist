@@ -11,7 +11,7 @@ const ITEMS = [
   "Bregða einhverjum túrista",
   "Safna 2000 kr með fiðlu",
   "Fara í plumberkeppni við eitthvern",
-  "Gefa öndunum brauð með munninum",
+  "Gefa öndunum brauð með munninum þvi það er svo gaman test",
 ];
 
 export default ITEMS;
