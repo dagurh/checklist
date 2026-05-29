@@ -254,15 +254,19 @@
     });
   }
 
-  async function toggle(index) {
-    const nowChecked = !checked[index];
-    if (nowChecked) checked[index] = true; else delete checked[index];
-    render();
-    setSyncStatus("Vistar…");
-    await setChecked(index, nowChecked);
-    setSyncStatus("Vistað ✓");
-    setTimeout(() => setSyncStatus(""), 1500);
-  }
+async function toggle(index) {
+  const nowChecked = !checked[index];
+  if (nowChecked) checked[index] = true; else delete checked[index];
+  render();
+  setSyncStatus("Vistar…");
+  await fetch("/api/checks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ state: checked }), // send full state
+  });
+  setSyncStatus("Vistað ✓");
+  setTimeout(() => setSyncStatus(""), 1500);
+}
 
   function setSyncStatus(msg) {
     const el = document.getElementById("sync-status");
