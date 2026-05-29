@@ -213,6 +213,7 @@
   import ITEMS from "./items.js";
 
   let checked = {};
+  let isSaving = false;
 
   async function fetchChecked() {
     const res = await fetch("/api/checks");
@@ -259,11 +260,13 @@ async function toggle(index) {
   if (nowChecked) checked[index] = true; else delete checked[index];
   render();
   setSyncStatus("Vistar…");
+  isSaving = true;
   await fetch("/api/checks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ state: checked }), // send full state
   });
+  isSaving = false;
   setSyncStatus("Vistað ✓");
   setTimeout(() => setSyncStatus(""), 1500);
 }
@@ -282,10 +285,11 @@ async function toggle(index) {
 
   // Poll for updates from other users every 5 seconds
   init();
-  setInterval(async () => {
-    checked = await fetchChecked();
-    render();
-  }, 5000);
+setInterval(async () => {
+  if (isSaving) return;  // skip poll while saving
+  checked = await fetchChecked();
+  render();
+}, 5000);
 </script>
 </body>
 </html>
