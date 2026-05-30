@@ -12,6 +12,13 @@ const ITEMS = [
   "Safna 2000 kr með fiðlu",
   "Fara í plumberkeppni við eitthvern",
   "Gefa öndunum brauð með munninum",
+  "Fá eiginhandaráritun á rassinn frá túrista",
+  "Taka sæljónið á Ingólfstorgi",
+  "Stoppa bíl og taka truffle shuffle",
+  "Fá mynd með celeb",
+  "Lyfta asíubúa",
+  "Rimma einhvern",
+  "Skríða í gegnum veitingastað/bar",
 ];
 
 export default ITEMS;
