@@ -19,13 +19,13 @@ const ITEMS = [
   "Lyfta asíubúa",
   "Rimma einhvern",
   "Skríða í gegnum veitingastað/bar",
-  “Borða úr rusli”,
-  “Grátbiðja fólk um að fara inn á penis museum”,
-  “Reyna að fá ókunnugan i að purra bumbuna”,
-  “Láta ókunnugan taka body shot úr þé”,
-  “Fara i sleik”,
-  “Chuggkeppni við villa a bensanum”,
-  “Fá sopa hjá róna”,
+  "Borða úr rusli",
+  "Grátbiðja fólk um að fara inn á penis museum",
+  "Reyna að fá ókunnugan i að purra bumbuna",
+  "Láta ókunnugan taka body shot úr þé",
+  "Fara i sleik",
+  "Chuggkeppni við villa a bensanum",
+  "Fá sopa hjá róna",
 ];
 
 export default ITEMS;
