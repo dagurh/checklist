@@ -230,7 +230,7 @@
   function render() {
     const list = document.getElementById("list");
     const doneCount = Object.keys(checked).length;
-    const total = ITEMS.length;
+    const total = 20;
 
     document.getElementById("progress").style.width = total ? (doneCount / total * 100) + "%" : "0%";
     document.getElementById("progress-label").textContent = `${doneCount} / ${total} lokið`;
