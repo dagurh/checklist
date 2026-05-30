@@ -26,6 +26,7 @@ const ITEMS = [
   "Fara i sleik",
   "Chuggkeppni við villa a bensanum",
   "Fá sopa hjá róna",
+  "komast í story hjá eitthverjum",
 ];
 
 export default ITEMS;
